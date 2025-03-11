@@ -1,0 +1,8 @@
+Origin: - 备份收集
+Label: - 备份收集
+Suite: stable
+Version: 1.0
+Codename: 是非。
+Architectures: iphoneos-arm iphoneos-arm64 iphoneos-arm64e
+Components: main
+Description: 源内插件仅为自用备份。
