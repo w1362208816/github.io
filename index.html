@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+<title>备份收集源</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    box-shadow: none;
+  }
+
+  h1 {
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 2.5em;
+    font-weight: 500;
+    font-family: Arial, sans-serif;
+    margin: 20px 0;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    margin-bottom: 35px
+  }
+
+  .description {
+    margin-top: 10px;
+    color: rgba(0, 0, 0, 0.8);
+    font-family: Arial, sans-serif;
+    font-size: 1em;
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    margin-top: 15px;
+  }
+
+  .rotating-image {
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    animation: rotate 5s linear infinite;
+    cursor: pointer;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .time {
+    color: rgba(0, 0, 0, 0.8);
+    font-family: Arial, sans-serif;
+    font-size: 1.2em;
+    position: relative;
+    top: -30px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+  }
+
+  .timestamp {
+    color: rgba(0, 0, 0, 0.6);
+    font-family: Arial, sans-serif;
+    font-size: 1.0em;
+    position: relative;
+    top: -30px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+  }
+
+  .source-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .source-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 25px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  .source-container img {
+    width: 40px; 
+    height: 40px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  .source-text {
+    color: rgba(0, 0, 0, 0.8);
+    font-family: Arial, sans-serif;
+    font-size: 0.7em;
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+
+  .overlay.show {
+    display: flex;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .modal {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8);
+    animation: modalOpen 0.5s ease-out;
+  }
+
+  @keyframes modalOpen {
+    0% {
+      transform: scale(0.7);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .modal h2 {
+    font-size: 1em;
+    margin-bottom: 10px;
+    margin-top: 0px;
+    color: black;
+  }
+
+  .modal p {
+    font-size: 0.8em;
+    color: black;
+  }
+
+  .modal button {
+    font-size: 1em;
+    padding: 2px 6px;
+    border-radius: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+
+  .modal button:hover {
+    background-color: #555;
+  }
+
+  .footer {
+    color: rgba(0, 0, 255, 0.6);
+    font-size: 1.2em;
+    text-align: center;
+    margin-top: 40px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .emoji {     
+      position: fixed;
+      top: -50px;
+      animation: fall linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+  }
+
+</style>
+</head>
+<body>
+  <h1 onclick="showModal()">备份收集源</h1>
+  <div class="time" id="current-time">北京时间: 正在加载...</div>
+  <div class="timestamp" id="timestamp">时间戳: 正在加载...</div>
+  <div class="description" onclick="playAudio()">
+    <img src="repo/images/333.png" alt="是非。" class="rotating-image"><br>点击头像播放音乐🎵
+  </div>
+  <audio id="audio" src="repo/audio/jntm.mp3"></audio>
+  <div class="source-row">
+    <div class="source-container" onclick="window.location.href='sileo://source/http://zhouyiamor.eu.org:35589'">
+      <img src="repo/images/sileo.png" alt="Sileo">
+      <div class="source-text">添加到Sileo</div>
+    </div>
+    <div class="source-container" onclick="window.location.href='zebra://source/http://zhouyiamor.eu.org:35589'">
+        <img src="repo/images/zebra.png" alt="Zebra">
+        <div class="source-text">添加到Zebra</div>
+    </div>
+    <div class="source-container" onclick="window.location.href='apt-repo://http://zhouyiamor.eu.org:35589'">
+      <img src="repo/images/saily.png" alt="Saily">
+      <div class="source-text">添加到Saily</div>
+    </div>
+    <div class="source-container" onclick="window.location.href='cydia://url/http://zhouyiamor.eu.org:35589'">
+        <img src="repo/images/cydia.png" alt="Cydia">
+        <div class="source-text">添加到Cydia</div>
+    </div>
+    <div class="source-container" onclick="window.location.href='esign://addsource?url=http://zhouyiamor.eu.org:35589/esign/ipa.json'">
+      <img src="repo/images/esign.png" alt="轻松签">
+      <div class="source-text">添加到轻松签</div>
+    </div>
+  </div>
+  <div class="overlay" id="modal-overlay">
+    <div class="modal">
+      <h2>不要为了越狱而放弃升级的乐趣～</h2>
+      <p>小伙子不要乱点<br><br>请点击Sileo、Saily<br><br>或者轻松签添加备份收集源</p>
+      <button onclick="closeModal()">我知道了</button>
+    </div>
+  </div>
+  <div class="footer" onclick="showModal()">
+    <span><br>欢迎光临本源！<br><br>本源由「是非。—— <爱折腾的小白鼠>」提供技术支持<br><br>备份收集源 © 2008~2024 是非。</span>
+  </div>
+  <script>
+    function playAudio() {
+      const audio = document.getElementById('audio');
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    }
+    function closeModal() {
+      const modal = document.getElementById('modal-overlay');
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300); 
+    }
+    function showModal() {
+      const modal = document.getElementById('modal-overlay');
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10); 
+    }
+    function updateTime() {
+      const timeElement = document.getElementById('current-time');
+      const timestampElement = document.getElementById('timestamp');
+      const now = new Date();
+      timeElement.textContent = `北京时间: ${now.getFullYear()}年${(now.getMonth() + 1).toString().padStart(2, '0')}月${now.getDate().toString().padStart(2, '0')}日 ${now.getHours().toString().padStart(2, '0')}时${now.getMinutes().toString().padStart(2, '0')}分${now.getSeconds().toString().padStart(2, '0')}秒`;
+      timestampElement.textContent = `时间戳: ${Math.floor(now.getTime() / 1000)}`;
+    }
+    setInterval(updateTime, 1000);
+
+    let emojiCount = 0;
+    const maxEmojis = 50;
+    const emojis = ['🌺', '🌸', '🌼', '☘️', '🍀', '🍂', '🍁'];
+
+    function createEmoji() {
+        if (emojiCount >= maxEmojis) return;
+
+        const emoji = document.createElement('div');
+        emoji.className = 'emoji';
+        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * 100 + 'vw';
+        emoji.style.fontSize = Math.random() * 5 + 20 + 'px';
+        emoji.style.opacity = Math.random() * 1 + 0.1;
+        emoji.style.animationDuration = `${Math.random() * 7 + 2}s`;
+
+        document.body.appendChild(emoji);
+        emojiCount++;
+
+        emoji.addEventListener('animationend', () => {
+            emoji.remove();
+            emojiCount--;
+        });
+    }
+
+    function startEmojiRain() {
+        setInterval(createEmoji, 100);
+    }
+
+    startEmojiRain();
+  </script>
+</body>
+</html>
